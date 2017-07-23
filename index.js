@@ -16,4 +16,10 @@ function initStorage() {
     // 数据信息统计
     debug('storage has been load 2 player db model');
   });
+
+  app.on('resetStorage', function(storage, db) {
+    debug('player begin reset storage');
+
+    console.log(db);
+  });
 }
