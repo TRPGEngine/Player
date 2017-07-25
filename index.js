@@ -16,4 +16,18 @@ function initStorage() {
     // 数据信息统计
     debug('storage has been load 2 player db model');
   });
+
+  app.on('resetStorage', function(storage, db) {
+    console.log(db);
+    debug('start reset player storage');
+    db.models.core_user.create({
+      username: 'admin',
+      password: md5('admin'),
+      uuid: uuid()
+    }, function(err, res) {
+      if (err) throw err;
+
+      debug('player storage reset completed!');
+    });
+  });
 }
