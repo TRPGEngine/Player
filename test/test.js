@@ -4,5 +4,7 @@ let app = require('../../Core/')();
 app.load(player);
 app.run();
 
-app.reset();
+app.player.getPlayer(1, function(err, user) {
+  console.log(user);
+});
 app.close();
