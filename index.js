@@ -1,5 +1,5 @@
 const debug = require('debug')('trpg:component:player');
-const md5 = require('./lib/md5');
+const md5 = require('./md5');
 const uuid = require('uuid/v1');
 
 module.exports = function PlayerComponent(app) {
@@ -23,11 +23,25 @@ function initStorage() {
     db.models.core_user.create({
       username: 'admin',
       password: md5('admin'),
-      uuid: uuid()
+      selected_actor: 1
     }, function(err, res) {
       if (err) throw err;
 
-      debug('player storage reset completed!');
+      db.models.core_actor.create({
+        name: 'demo',
+        user_id: res.id,
+        info: {
+          "测试信息": "测试信息内容",
+          "测试信息组": {
+            "测试信息组1": "测试信息内容1",
+            "测试信息组2": "测试信息内容2"
+          }
+        }
+      }, function(err, res) {
+        if (err) throw err;
+
+        debug('player storage reset completed!');
+      })
     });
   });
 }
