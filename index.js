@@ -1,10 +1,12 @@
 const debug = require('debug')('trpg:component:player');
-const md5 = require('./md5');
 const uuid = require('uuid/v1');
+const event = require('./lib/event');
+const PlayerList = require('./lib/list');
 
 module.exports = function PlayerComponent(app) {
   initStorage.call(app);
   initFunction.call(app);
+  initSocket.call(app);
 }
 
 function initStorage() {
@@ -45,11 +47,11 @@ function initStorage() {
     });
   });
 }
-
 function initFunction() {
   let app = this;
   let storage = app.storage;
   app.player = {
+    list: new PlayerList(),
     getPlayer: function getPlayer(id, cb) {
       if(typeof id != 'number') {
         throw new Error(`id must be a Number, not a ${typeof id}`);
@@ -67,4 +69,11 @@ function initFunction() {
       });
     }
   }
+}
+function initSocket() {
+  let app = this;
+  app.on('connection', function(socket) {
+    let wrap = {app, socket};
+    socket.on('player::login', event.login.bind(wrap));
+  })
 }
