@@ -60,12 +60,24 @@ function initFunction() {
       storage.connect(function(db) {
         let modelUser = db.models.core_user;
         modelUser.get(id, function(err, user) {
+          if(!cb) { return; }
+
           if(!!err) {
             cb(err, null);
           }else {
             cb(null, user);
           }
         });
+      });
+    },
+    getActor: function getActor(playerId, cb) {
+      if(typeof playerId != 'number') {
+        throw new Error(`id must be a Number, not a ${typeof id}`);
+      }
+
+      storage.connect(function(db) {
+        let modelActor = db.models.core_actor;
+        modelActor.find({user_id: playerId}, function(err, ));
       });
     }
   }
