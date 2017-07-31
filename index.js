@@ -70,14 +70,40 @@ function initFunction() {
         });
       });
     },
-    getActor: function getActor(playerId, cb) {
+    getActorList: function getActorList(playerId, cb) {
       if(typeof playerId != 'number') {
         throw new Error(`id must be a Number, not a ${typeof id}`);
       }
 
       storage.connect(function(db) {
         let modelActor = db.models.core_actor;
-        modelActor.find({user_id: playerId}, function(err, ));
+        modelActor.find({user_id: playerId}, function(err, actor) {
+          if(!cb) { return; }
+
+          if(!!err) {
+            cb(err, null);
+          }else {
+            cb(null, actor);
+          }
+        });
+      });
+    },
+    getActor: function getActor(id, cb) {
+      if(typeof id != 'number') {
+        throw new Error(`id must be a Number, not a ${typeof id}`);
+      }
+
+      storage.connect(function(db) {
+        let modelActor = db.models.core_actor;
+        modelActor.get(id, function(err, actor) {
+          if(!cb) { return; }
+
+          if(!!err) {
+            cb(err, null);
+          }else {
+            cb(null, actor);
+          }
+        });
       });
     }
   }
