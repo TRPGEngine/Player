@@ -22,14 +22,14 @@ function initStorage() {
 
   app.on('resetStorage', function(storage, db) {
     debug('start reset player storage');
-    db.models.core_user.create({
+    db.models.player_user.create({
       username: 'admin',
       password: md5('admin'),
       selected_actor: 1
     }, function(err, res) {
       if (err) throw err;
 
-      db.models.core_actor.create({
+      db.models.player_actor.create({
         name: 'demo',
         user_id: res.id,
         info: {
@@ -58,7 +58,7 @@ function initFunction() {
       }
 
       storage.connect(function(db) {
-        let modelUser = db.models.core_user;
+        let modelUser = db.models.player_user;
         modelUser.get(id, function(err, user) {
           if(!cb) { return; }
 
@@ -76,7 +76,7 @@ function initFunction() {
       }
 
       storage.connect(function(db) {
-        let modelActor = db.models.core_actor;
+        let modelActor = db.models.player_actor;
         modelActor.find({user_id: playerId}, function(err, actor) {
           if(!cb) { return; }
 
@@ -94,7 +94,7 @@ function initFunction() {
       }
 
       storage.connect(function(db) {
-        let modelActor = db.models.core_actor;
+        let modelActor = db.models.player_actor;
         modelActor.get(id, function(err, actor) {
           if(!cb) { return; }
 
