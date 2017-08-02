@@ -1,5 +1,6 @@
 const debug = require('debug')('trpg:component:player');
 const uuid = require('uuid/v1');
+const md5 = require('./md5');
 const event = require('./lib/event');
 const PlayerList = require('./lib/list');
 
@@ -12,8 +13,8 @@ module.exports = function PlayerComponent(app) {
 function initStorage() {
   let app = this;
   let storage = app.storage;
-  storage.registerModel(require('./lib/models/actor.js'));
   storage.registerModel(require('./lib/models/user.js'));
+  storage.registerModel(require('./lib/models/actor.js'));
 
   app.on('initCompleted', function(app) {
     // 数据信息统计
@@ -28,6 +29,7 @@ function initStorage() {
       selected_actor: 1
     }, function(err, res) {
       if (err) throw err;
+      let admUser = res;
 
       db.models.player_actor.create({
         name: 'demo',
@@ -41,7 +43,11 @@ function initStorage() {
         }
       }, function(err, res) {
         if (err) throw err;
-
+        res.setOwner(admUser, function(err) {
+          if(!!err) {
+            console.error(err);
+          }
+        });
         debug('player storage reset completed!');
       })
     });
