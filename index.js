@@ -119,5 +119,6 @@ function initSocket() {
   app.on('connection', function(socket) {
     let wrap = {app, socket};
     socket.on('player::login', event.login.bind(wrap));
+    socket.on('player::loginWithToken', event.loginWithToken.bind(wrap));
   })
 }
