@@ -90,6 +90,7 @@ function initSocket() {
     socket.on('player::login', event.login.bind(wrap));
     socket.on('player::loginWithToken', event.loginWithToken.bind(wrap));
     socket.on('player::register', event.register.bind(wrap));
+    socket.on('player::getInfo', event.getInfo.bind(wrap));
   })
 }
 function initReset() {
