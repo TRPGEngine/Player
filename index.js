@@ -45,6 +45,24 @@ function initFunction() {
         });
       });
     },
+    find: function find(uuid, cb) {
+      if(typeof uuid != 'string') {
+        throw new Error(`uuid must be a string, not a ${typeof uuid}`);
+      }
+
+      storage.connect(function(db) {
+        let modelUser = db.models.player_user;
+        modelUser.find({uuid}, function(err, user) {
+          if(!cb) { return; }
+
+          if(!!err) {
+            cb(err, null);
+          }else {
+            cb(null, user);
+          }
+        });
+      });
+    },
     getActorList: function getActorList(playerId, cb) {
       if(typeof playerId != 'number') {
         throw new Error(`id must be a Number, not a ${typeof id}`);
