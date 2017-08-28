@@ -109,6 +109,7 @@ function initSocket() {
     socket.on('player::loginWithToken', event.loginWithToken.bind(wrap));
     socket.on('player::register', event.register.bind(wrap));
     socket.on('player::getInfo', event.getInfo.bind(wrap));
+    socket.on('player::logout', event.logout.bind(wrap));
   })
 }
 function initReset() {
