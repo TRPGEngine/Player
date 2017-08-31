@@ -110,6 +110,7 @@ function initSocket() {
     socket.on('player::register', event.register.bind(wrap));
     socket.on('player::getInfo', event.getInfo.bind(wrap));
     socket.on('player::logout', event.logout.bind(wrap));
+    socket.on('player::findUser', event.findUser.bind(wrap));
   })
 }
 function initReset() {
