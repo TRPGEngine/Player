@@ -83,7 +83,8 @@ function initFunction() {
     },
     getActor: function getActor(id, cb) {
       if(typeof id != 'number') {
-        throw new Error(`id must be a Number, not a ${typeof id}`);
+        debug(`id must be a Number, not a ${typeof id}`);
+        return;
       }
 
       storage.connect(function(db) {
@@ -95,6 +96,49 @@ function initFunction() {
             cb(err, null);
           }else {
             cb(null, actor);
+          }
+        });
+      });
+    },
+    makeFriend: function makeFriend(uuid1, uuid2, cb) {
+      if(!uuid1 || !uuid2) {
+        debug('make friend need 2 uuid: receive %o', {uuid1, uuid2});
+        return;
+      }
+
+      storage.connect(function(db) {
+        let modelUser = db.models.player_user;
+
+        modelUser.one({uuid: uuid1}, function(err, user1) {
+          modelUser.one({uuid: uuid2}, function(err, user2) {
+            let isErrorSend = false;
+            let flag = false;
+            let handleError = function(err) {
+              if(!!err && !isErrorSend) {
+                isErrorSend = true;
+                cb(err);
+              }else {
+                if(flag === true) {
+                  cb(null);
+                }
+                flag = true;
+              }
+            }
+            user1.addFriends([user2], handleError);
+            user2.addFriends([user1], handleError);
+          })
+        })
+      });
+    },
+    getFriends: function(uuid, cb) {
+      storage.connect(function(db) {
+        let modelUser = db.models.player_user;
+
+        modelUser.one({uuid}, function(err, user) {
+          if(!!err) {
+            cb(err)
+          }else {
+            user.getFriends(cb)
           }
         });
       });
@@ -111,6 +155,8 @@ function initSocket() {
     socket.on('player::getInfo', event.getInfo.bind(wrap));
     socket.on('player::logout', event.logout.bind(wrap));
     socket.on('player::findUser', event.findUser.bind(wrap));
+    socket.on('player::addFriend', event.addFriend.bind(wrap));
+    socket.on('player::getFriends', event.getFriends.bind(wrap));
   })
 }
 function initReset() {
