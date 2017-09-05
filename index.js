@@ -158,6 +158,7 @@ function initSocket() {
     socket.on('player::addFriend', event.addFriend.bind(wrap));
     socket.on('player::getFriends', event.getFriends.bind(wrap));
     socket.on('player::sendFriendInvite', event.sendFriendInvite.bind(wrap));
+    socket.on('player::refuseFriendInvite', event.refuseFriendInvite.bind(wrap));
   })
 }
 function initReset() {
