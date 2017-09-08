@@ -16,10 +16,11 @@ function initStorage() {
   let storage = app.storage;
   storage.registerModel(require('./lib/models/user.js'));
   storage.registerModel(require('./lib/models/actor.js'));
+  storage.registerModel(require('./lib/models/invite.js'));
 
   app.on('initCompleted', function(app) {
     // 数据信息统计
-    debug('storage has been load 2 player db model');
+    debug('storage has been load 3 player db model');
   });
 }
 function initFunction() {

@@ -22,6 +22,7 @@
   "dependencies": {
     "crypto": "0.0.3",
     "debug": "^2.6.8",
+    "moment": "^2.18.1",
     "uuid": "^3.1.0"
   }
 }
