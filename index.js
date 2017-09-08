@@ -157,8 +157,10 @@ function initSocket() {
     socket.on('player::findUser', event.findUser.bind(wrap));
     socket.on('player::addFriend', event.addFriend.bind(wrap));
     socket.on('player::getFriends', event.getFriends.bind(wrap));
-    socket.on('player::sendFriendInvite', event.sendFriendInvite.bind(wrap));
+    socket.on('player::invite', event.sendFriendInvite.bind(wrap));
     socket.on('player::refuseFriendInvite', event.refuseFriendInvite.bind(wrap));
+    socket.on('player::agreeFriendInvite', event.agreeFriendInvite.bind(wrap));
+    socket.on('player::getFriendsInvite', event.getFriendsInvite.bind(wrap));
   })
 }
 function initReset() {
