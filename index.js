@@ -47,7 +47,7 @@ function initFunction() {
       });
     },
     find: function find(uuid, cb) {
-      if(typeof uuid != 'string') {
+      if(typeof uuid !== 'string') {
         throw new Error(`uuid must be a string, not a ${typeof uuid}`);
       }
 
