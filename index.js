@@ -15,12 +15,11 @@ function initStorage() {
   let app = this;
   let storage = app.storage;
   storage.registerModel(require('./lib/models/user.js'));
-  storage.registerModel(require('./lib/models/actor.js'));
   storage.registerModel(require('./lib/models/invite.js'));
 
   app.on('initCompleted', function(app) {
     // 数据信息统计
-    debug('storage has been load 3 player db model');
+    debug('storage has been load 2 player db model');
   });
 }
 function initFunction() {
@@ -179,43 +178,8 @@ function initReset() {
       selected_actor: 2
     }], function(err, res) {
       if (err) throw err;
-      let admUser = res[0];
-      let admUser2 = res[1];
 
-      db.models.player_actor.create([{
-        name: 'demo',
-        user_id: res.id,
-        info: {
-          "测试信息": "测试信息内容",
-          "测试信息组": {
-            "测试信息组1": "测试信息内容1",
-            "测试信息组2": "测试信息内容2"
-          }
-        }
-      },{
-        name: 'demo2',
-        user_id: res.id,
-        info: {
-          "测试信息": "测试信息内容222",
-          "测试信息组": {
-            "测试信息组1": "测试信息内容122",
-            "测试信息组2": "测试信息内容222"
-          }
-        }
-      }], function(err, res) {
-        if (err) throw err;
-        res[0].setOwner(admUser, function(err) {
-          if(!!err) {
-            console.error(err);
-          }
-        });
-        res[1].setOwner(admUser2, function(err) {
-          if(!!err) {
-            console.error(err);
-          }
-        });
-        debug('player storage reset completed!');
-      })
+      debug('player storage reset completed!');
     });
   });
 }
