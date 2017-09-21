@@ -162,6 +162,14 @@ function initSocket() {
     socket.on('player::agreeFriendInvite', event.agreeFriendInvite.bind(wrap));
     socket.on('player::getFriendsInvite', event.getFriendsInvite.bind(wrap));
   })
+  // TODO:需要考虑到断线重连的问题
+  app.on('disconnect', function(socket) {
+    let player = app.player.list.find(socket);
+    if(player) {
+      debug('user[%s] disconnect, remove it from list', player.uuid);
+      app.player.list.remove(player.uuid);
+    }
+  })
 }
 function initReset() {
   let app = this;
