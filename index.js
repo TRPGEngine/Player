@@ -147,21 +147,19 @@ function initFunction() {
 }
 function initSocket() {
   let app = this;
-  app.on('connection', function(socket) {
-    let wrap = {app, socket};
-    socket.on('player::login', event.login.bind(wrap));
-    socket.on('player::loginWithToken', event.loginWithToken.bind(wrap));
-    socket.on('player::register', event.register.bind(wrap));
-    socket.on('player::getInfo', event.getInfo.bind(wrap));
-    socket.on('player::logout', event.logout.bind(wrap));
-    socket.on('player::findUser', event.findUser.bind(wrap));
-    socket.on('player::addFriend', event.addFriend.bind(wrap));
-    socket.on('player::getFriends', event.getFriends.bind(wrap));
-    socket.on('player::invite', event.sendFriendInvite.bind(wrap));
-    socket.on('player::refuseFriendInvite', event.refuseFriendInvite.bind(wrap));
-    socket.on('player::agreeFriendInvite', event.agreeFriendInvite.bind(wrap));
-    socket.on('player::getFriendsInvite', event.getFriendsInvite.bind(wrap));
-  })
+  app.registerEvent('player::login', event.login);
+  app.registerEvent('player::loginWithToken', event.loginWithToken);
+  app.registerEvent('player::register', event.register);
+  app.registerEvent('player::getInfo', event.getInfo);
+  app.registerEvent('player::logout', event.logout);
+  app.registerEvent('player::findUser', event.findUser);
+  app.registerEvent('player::addFriend', event.addFriend);
+  app.registerEvent('player::getFriends', event.getFriends);
+  app.registerEvent('player::invite', event.invite);
+  app.registerEvent('player::refuseFriendInvite', event.refuseFriendInvite);
+  app.registerEvent('player::agreeFriendInvite', event.agreeFriendInvite);
+  app.registerEvent('player::getFriendsInvite', event.getFriendsInvite);
+
   // TODO:需要考虑到断线重连的问题
   app.on('disconnect', function(socket) {
     let player = app.player.list.find(socket);
