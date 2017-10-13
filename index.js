@@ -172,20 +172,26 @@ function initSocket() {
 function initReset() {
   let app = this;
 
-  app.on('resetStorage', function(storage, db) {
+  app.register('resetStorage', async function(storage, db) {
     debug('start reset player storage');
-    db.models.player_user.create([{
-      username: 'admin',
-      password: md5('admin'),
-      selected_actor: 1
-    },{
-      username: 'admin2',
-      password: md5('admin'),
-      selected_actor: 2
-    }], function(err, res) {
-      if (err) throw err;
+    try {
+      let res = await db.models.player_user.createAsync([{
+        username: 'admin',
+        password: md5('admin'),
+        selected_actor: 1
+      },{
+        username: 'admin2',
+        password: md5('admin'),
+        selected_actor: 2
+      }]);
 
+      // 测试：相互添加好友
+      await res[0].addFriendsAsync([res[1]]);
+      await res[1].addFriendsAsync([res[0]]);
       debug('player storage reset completed!');
-    });
+    }catch(err) {
+      console.error(err);
+      throw err;
+    }
   });
 }
