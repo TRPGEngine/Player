@@ -42,6 +42,7 @@ function initFunction() {
           }else {
             cb(null, user);
           }
+          db.close();
         });
       });
     },
@@ -60,6 +61,7 @@ function initFunction() {
           }else {
             cb(null, user);
           }
+          db.close();
         });
       });
     },
@@ -78,6 +80,7 @@ function initFunction() {
           }else {
             cb(null, actor);
           }
+          db.close();
         });
       });
     },
@@ -97,6 +100,7 @@ function initFunction() {
           }else {
             cb(null, actor);
           }
+          db.close();
         });
       });
     },
@@ -126,6 +130,7 @@ function initFunction() {
             }
             user1.addFriends([user2], handleError);
             user2.addFriends([user1], handleError);
+            db.close();
           })
         })
       });
@@ -140,6 +145,7 @@ function initFunction() {
           }else {
             user.getFriends(cb)
           }
+          db.close();
         });
       });
     }
