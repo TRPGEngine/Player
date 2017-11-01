@@ -184,11 +184,9 @@ function initReset() {
       let res = await db.models.player_user.createAsync([{
         username: 'admin',
         password: md5('admin'),
-        selected_actor: 1
       },{
         username: 'admin2',
         password: md5('admin'),
-        selected_actor: 2
       }]);
 
       // 测试：相互添加好友
