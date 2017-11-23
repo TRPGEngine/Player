@@ -158,6 +158,7 @@ function initSocket() {
   app.registerEvent('player::register', event.register);
   app.registerEvent('player::getInfo', event.getInfo);
   app.registerEvent('player::updateInfo', event.updateInfo);
+  app.registerEvent('player::changePassword', event.changePassword);
   app.registerEvent('player::logout', event.logout);
   app.registerEvent('player::findUser', event.findUser);
   app.registerEvent('player::addFriend', event.addFriend);
