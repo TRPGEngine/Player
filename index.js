@@ -185,13 +185,13 @@ function initReset() {
     try {
       let res = await db.models.player_user.createAsync([{
         username: 'admin',
-        password: md5('admin'),
+        password: md5(md5('admin')),
         avatar: 'http://www.qqzhi.com/uploadpic/2015-01-22/022222987.jpg',
         nickname: '管理员',
         sign: '伟大的管理员大大',
       },{
         username: 'admin2',
-        password: md5('admin'),
+        password: md5(md5('admin')),
       }]);
 
       // 测试：相互添加好友
