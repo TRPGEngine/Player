@@ -163,7 +163,7 @@ function initSocket() {
   app.registerEvent('player::findUser', event.findUser);
   app.registerEvent('player::addFriend', event.addFriend);
   app.registerEvent('player::getFriends', event.getFriends);
-  app.registerEvent('player::invite', event.invite);
+  app.registerEvent('player::sendFriendInvite', event.sendFriendInvite);
   app.registerEvent('player::refuseFriendInvite', event.refuseFriendInvite);
   app.registerEvent('player::agreeFriendInvite', event.agreeFriendInvite);
   app.registerEvent('player::getFriendsInvite', event.getFriendsInvite);
