@@ -16,6 +16,7 @@ function initStorage() {
   let storage = app.storage;
   storage.registerModel(require('./lib/models/user.js'));
   storage.registerModel(require('./lib/models/invite.js'));
+  storage.registerModel(require('./lib/models/loginLog.js'));
 
   app.on('initCompleted', function(app) {
     // 数据信息统计
