@@ -8,6 +8,7 @@ module.exports = function PlayerComponent(app) {
   initStorage.call(app);
   initFunction.call(app);
   initSocket.call(app);
+  initTimer.call(app);
   initReset.call(app);
 }
 
@@ -178,6 +179,18 @@ function initSocket() {
     }
   })
 }
+
+function initTimer() {
+  let app = this;
+
+  app.registerStatJob('playerCount', async () => {
+    let db = await app.storage.connectAsync();
+    let res = await db.models.player_user.countAsync();
+    db.close();
+    return res;
+  })
+}
+
 function initReset() {
   let app = this;
 
