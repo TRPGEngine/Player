@@ -54,14 +54,13 @@ function initFunction() {
       }
 
       storage.connect(function(db) {
-        let modelUser = db.models.player_user;
-        modelUser.find({uuid}, function(err, user) {
+        db.models.player_user.find({uuid}, function(err, user) {
           if(!cb) { return; }
 
           if(!!err) {
             cb(err, null);
           }else {
-            cb(null, user);
+            cb(null, user[0]);
           }
           db.close();
         });
