@@ -136,6 +136,24 @@ function initFunction() {
         })
       });
     },
+    makeFriendAsync: async function(uuid1, uuid2) {
+      if(!uuid1 || !uuid2) {
+        debug('make friend need 2 uuid: receive %o', {uuid1, uuid2});
+        return;
+      }
+
+      const db = await storage.connectAsync();
+      try {
+        let user1 = await db.models.player_user.oneAsync({uuid: uuid1});
+        let user2 = await db.models.player_user.oneAsync({uuid: uuid2});
+        await user1.addFriendsAsync([user2]);
+        await user2.addFriendsAsync([user1]);
+      } catch(err) {
+        throw err;
+      } finally {
+        db.close();
+      }
+    },
     getFriends: function(uuid, cb) {
       storage.connect(function(db) {
         let modelUser = db.models.player_user;
