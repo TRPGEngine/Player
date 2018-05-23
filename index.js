@@ -206,6 +206,36 @@ function initTimer() {
     db.close();
     return res;
   })
+
+  app.registerStatJob('playerLoginIPParse', async () => {
+    let db;
+    try {
+      db = await app.storage.connectAsync();
+      let logs = await db.models.player_login_log.findAsync({ip_address: null});
+      for (let log of logs) {
+        let ip = log.ip;
+        if (ip.indexOf(':') >= 0) {
+          let tmp = ip.split(':');
+          ip = tmp[tmp.length - 1];
+        }
+        debug('请求ip信息地址:', ip);
+        let info = await app.request.post('http://ip.taobao.com/service/getIpInfo2.php', 'ip='+ip, {
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        });
+        if(info.code === 0) {
+          let data = info.data;
+          log.ip_address = `[${data.isp}]${data.country} ${data.region} ${data.city} ${data.county}`;
+          debug('请求ip信息结果:', log.ip_address);
+          await log.saveAsync();
+        }
+      }
+      return new Date().valueOf();
+    }catch (error) {
+      debug('parse player login log ip error:', error);
+    } finally {
+      db && db.close();
+    }
+  })
 }
 
 function initReset() {
