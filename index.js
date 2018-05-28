@@ -10,6 +10,10 @@ module.exports = function PlayerComponent(app) {
   initSocket.call(app);
   initTimer.call(app);
   initReset.call(app);
+
+  return {
+    name: "PlayerComponent"
+  }
 }
 
 function initStorage() {
