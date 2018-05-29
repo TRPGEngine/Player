@@ -190,6 +190,7 @@ function initSocket() {
   app.registerEvent('player::refuseFriendInvite', event.refuseFriendInvite);
   app.registerEvent('player::agreeFriendInvite', event.agreeFriendInvite);
   app.registerEvent('player::getFriendsInvite', event.getFriendsInvite);
+  app.registerEvent('player::checkUserOnline', event.checkUserOnline);
 
   // TODO:需要考虑到断线重连的问题
   app.on('disconnect', function(socket) {
