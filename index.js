@@ -171,7 +171,17 @@ function initFunction() {
           db.close();
         });
       });
-    }
+    },
+    // 服务端直接创建用户
+    createNewAsync: async function(username, password, options) {
+      let data = Object.assign({}, {
+        username,
+        password: md5(md5(password)),// 客户端一层md5, 服务端一层md5, 所以服务端直接创建用户需要2层md5加密
+      }, options);
+      let db = await storage.connectAsync();
+      let player = await db.models.player_user.createAsync(data);
+      return player;
+    },
   }
 }
 function initSocket() {
