@@ -173,6 +173,30 @@ function initFunction() {
         });
       });
     },
+    joinSocketRoom: function(userUUID, roomUUID) {
+      try {
+        let player = app.player.list.get(userUUID);
+        if(player) {
+          player.socket.join(roomUUID);
+        }else {
+          console.error('加入房间失败:', `玩家${roomUUID}不在线`)
+        }
+      }catch (e) {
+        console.error('加入房间失败:', e);
+      }
+    },
+    leaveSocketRoom: function() {
+      try {
+        let player = app.player.list.get(userUUID);
+        if(player) {
+          player.socket.leave(roomUUID);
+        }else {
+          console.error('离开房间失败:', `玩家${roomUUID}不在线`)
+        }
+      }catch (e) {
+        console.error('离开房间失败:', e);
+      }
+    },
     // 服务端直接创建用户
     createNewAsync: async function(username, password, options) {
       let data = Object.assign({}, {
