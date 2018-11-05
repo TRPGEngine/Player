@@ -1,18 +1,36 @@
 const debug = require('debug')('trpg:component:player');
 const uuid = require('uuid/v1');
+const Router = require('koa-router');
+const Geetest = require('gt3-sdk');
 const md5 = require('./md5');
 const event = require('./lib/event');
 const PlayerList = require('./lib/list');
 
+let geetest = null; // 极验的实例
+
 module.exports = function PlayerComponent(app) {
+  initConfig.call(app);
   initStorage.call(app);
   initFunction.call(app);
   initSocket.call(app);
+  initRouters.call(app);
   initTimer.call(app);
   initReset.call(app);
 
   return {
     name: "PlayerComponent"
+  }
+}
+
+function initConfig() {
+  const app = this;
+  const registerConfig = app.get('registerConfig');
+  if(registerConfig && registerConfig.geetest === true) {
+    const geetestInfo = registerConfig.geetestInfo;
+    geetest = new Geetest({
+      geetest_id: geetestInfo.id,
+      geetest_key: geetestInfo.key
+    });
   }
 }
 
@@ -237,6 +255,20 @@ function initSocket() {
       app.player.list.remove(player.uuid);
     }
   })
+}
+
+function initRouters() {
+  const app = this;
+  const webservice = app.webservice;
+  const router = new Router();
+
+  const register = require('./lib/routers/register');
+  router.use((ctx, next) => {
+    ctx.geetest = geetest; // 中间件声明全局实例
+    return next();
+  })
+  router.use('/player/register', register.routes());
+  webservice.use(router.routes());
 }
 
 function initTimer() {
