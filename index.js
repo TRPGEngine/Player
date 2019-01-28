@@ -325,7 +325,7 @@ function initReset() {
           password: md5(md5('admin')),
         })
       }
-      let res = await db.models.player_user.createAsync([{
+      let res = await db.models.player_user.bulkCreate([{
         username: 'admin',
         password: md5(md5('admin')),
         avatar: 'http://www.qqzhi.com/uploadpic/2015-01-22/022222987.jpg',
@@ -334,8 +334,8 @@ function initReset() {
       }, ...players]);
 
       // 测试：相互添加好友
-      await res[0].addFriendsAsync([res[1]]);
-      await res[1].addFriendsAsync([res[0]]);
+      await res[0].addFriends([res[1]]);
+      await res[1].addFriends([res[0]]);
       debug('player storage reset completed!');
     }catch(err) {
       console.error(err);
