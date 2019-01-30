@@ -349,5 +349,7 @@ function initTestcase() {
   const app = this;
   const testevent = require('./test/event');
 
-  app.registerTestcase('player::login', testevent.login);
+  for (let key in testevent) {
+    app.registerTestcase(`player::${key}`, testevent[key]);
+  }
 }
