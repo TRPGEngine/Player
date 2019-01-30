@@ -33,7 +33,35 @@ exports.register = async function(client, chai) {
     password: md5(random)
   })
 
-  console.log(data);
   chai.expect(data.results.username).to.equal(username);
   chai.expect(data.results.password).to.equal(md5(md5(random)));
+}
+
+exports.getInfo = async function(client, chai) {
+  const uuid = client.getGlobal('uuid');
+  const token = client.getGlobal('token');
+
+  let selfData = await client.emit('player::getInfo', {});
+  chai.expect(selfData.info.uuid).to.equal(uuid);
+  chai.expect(selfData.info.token).to.equal(token);
+
+  let userData = await client.emit('player::getInfo', {
+    type: 'user',
+    uuid
+  })
+  chai.expect(userData.info.uuid).to.equal(uuid);
+  chai.expect(userData.info.token).to.be.empty;
+}
+
+exports.updateInfo = async function(client, chai) {
+  const token = client.getGlobal('token');
+  const random = String(Math.random());
+
+  let data = await client.emit('player::updateInfo', {
+    sign: random,
+    token: random
+  })
+  chai.expect(data.user.sign).to.equal(random);
+  chai.expect(data.user.token, 'token不能被更新').to.equal(token);
+  chai.expect(data.user.token).to.not.equal(random);
 }
