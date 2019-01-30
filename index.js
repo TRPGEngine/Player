@@ -16,6 +16,7 @@ module.exports = function PlayerComponent(app) {
   initRouters.call(app);
   initTimer.call(app);
   initReset.call(app);
+  initTestcase.call(app);
 
   return {
     name: "PlayerComponent"
@@ -342,4 +343,11 @@ function initReset() {
       throw err;
     }
   });
+}
+
+function initTestcase() {
+  const app = this;
+  const testevent = require('./test/event');
+
+  app.registerTestcase('player::login', testevent.login);
 }
