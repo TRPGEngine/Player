@@ -1,10 +1,12 @@
 const md5 = require('../md5');
 
+const testUser = {
+  username: 'admin1',
+  password: md5('admin'),
+}
+
 exports.login = async function(client, chai) {
-  let data = await client.emit('player::login', {
-    username: 'admin1',
-    password: md5('admin'),
-  });
+  let data = await client.emit('player::login', testUser);
 
   chai.expect(data.info.username).to.equal('admin1');
 
@@ -64,4 +66,33 @@ exports.updateInfo = async function(client, chai) {
   chai.expect(data.user.sign).to.equal(random);
   chai.expect(data.user.token, 'token不能被更新').to.equal(token);
   chai.expect(data.user.token).to.not.equal(random);
+}
+
+exports.changePassword = async function(client, chai) {
+  const uuid = client.getGlobal('uuid');
+  const randomPassword = String(parseInt(Math.random() * 1e8));
+
+  let data1 = await client.emit('player::changePassword', {
+    oldPassword: testUser.password,
+    newPassword: randomPassword
+  })
+  let currentUser1 = await client.db.models.player_user.findOne({
+    where: {
+      uuid,
+    }
+  })
+  chai.expect(data1.user.uuid).to.be.equal(uuid);
+  chai.expect(currentUser1.password).to.be.equal(md5(randomPassword));
+
+  let data2 = await client.emit('player::changePassword', {
+    oldPassword: randomPassword,
+    newPassword: testUser.password
+  })
+  let currentUser2 = await client.db.models.player_user.findOne({
+    where: {
+      uuid,
+    }
+  })
+  chai.expect(data2.user.uuid).to.be.equal(uuid);
+  chai.expect(currentUser2.password).to.be.equal(md5(testUser.password));
 }
