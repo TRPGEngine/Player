@@ -5,13 +5,18 @@ const testUser = {
   password: md5('admin'),
 }
 
-exports.login = async function(client, chai) {
+const loginTestUser = async (client) => {
   let data = await client.emit('player::login', testUser);
-
-  chai.expect(data.info.username).to.equal('admin1');
-
   client.setGlobal('uuid', data.info.uuid);
   client.setGlobal('token', data.info.token);
+
+  return data;
+}
+
+exports.login = async function(client, chai) {
+  let data = await loginTestUser(client);
+
+  chai.expect(data.info.username).to.equal('admin1');
 }
 
 exports.loginWithToken = async function(client, chai) {
@@ -95,4 +100,15 @@ exports.changePassword = async function(client, chai) {
   })
   chai.expect(data2.user.uuid).to.be.equal(uuid);
   chai.expect(currentUser2.password).to.be.equal(md5(testUser.password));
+}
+
+exports.logout = async function(client, chai) {
+  const uuid = client.getGlobal('uuid');
+  const token = client.getGlobal('token');
+
+  let data = await client.emit('player::logout', {uuid, token});
+  chai.expect(data.result).to.be.equal(true);
+
+
+  await loginTestUser(client); // 重新登录
 }
