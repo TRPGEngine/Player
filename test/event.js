@@ -14,6 +14,15 @@ const loginTestUser = async (client) => {
 }
 
 exports.login = async function(client, chai) {
+  try {
+    await client.emit('player::login', {
+      username: 'admin1',
+      password: md5('errorPass')
+    });
+  } catch (e) {
+    chai.expect(e).to.be.a('string');
+  }
+
   let data = await loginTestUser(client);
 
   chai.expect(data.info.username).to.equal('admin1');
@@ -109,6 +118,26 @@ exports.logout = async function(client, chai) {
   let data = await client.emit('player::logout', {uuid, token});
   chai.expect(data.result).to.be.equal(true);
 
-
   await loginTestUser(client); // 重新登录
+}
+
+exports.findUser = async function(client, chai) {
+  const uuid = client.getGlobal('uuid');
+  let data1 = await client.emit('player::findUser', {
+    type: 'username',
+    text: testUser.username,
+  })
+  chai.expect(data1.results[0].username).to.be.equal(testUser.username);
+
+  let data2 = await client.emit('player::findUser', {
+    type: 'uuid',
+    text: uuid
+  })
+  chai.expect(data2.results[0].uuid).to.be.equal(uuid);
+
+  let data3 = await client.emit('player::nickname', {
+    type: 'nickname',
+    text: '管理员'
+  })
+  chai.expect(data3.result[0].nickname).to.be.equal('管理员');
 }
