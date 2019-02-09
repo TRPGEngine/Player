@@ -130,6 +130,7 @@ function initFunction() {
       });
     },
     makeFriend: function makeFriend(uuid1, uuid2, cb) {
+      // NOTICE: 弃用
       if(!uuid1 || !uuid2) {
         debug('make friend need 2 uuid: receive %o', {uuid1, uuid2});
         return;
@@ -160,22 +161,19 @@ function initFunction() {
         })
       });
     },
-    makeFriendAsync: async function(uuid1, uuid2) {
+    makeFriendAsync: async function(uuid1, uuid2, db) {
       if(!uuid1 || !uuid2) {
         debug('make friend need 2 uuid: receive %o', {uuid1, uuid2});
         return;
       }
 
-      const db = await storage.connectAsync();
       try {
         let user1 = await db.models.player_user.oneAsync({uuid: uuid1});
         let user2 = await db.models.player_user.oneAsync({uuid: uuid2});
-        await user1.addFriendsAsync([user2]);
-        await user2.addFriendsAsync([user1]);
+        await user1.addFriend(user2);
+        await user2.addFriend(user1);
       } catch(err) {
         throw err;
-      } finally {
-        db.close();
       }
     },
     getFriends: function(uuid, cb) {
@@ -335,8 +333,8 @@ function initReset() {
       }, ...players]);
 
       // 测试：相互添加好友
-      await res[0].addFriends([res[1]]);
-      await res[1].addFriends([res[0]]);
+      await res[0].addFriend(res[1]);
+      await res[1].addFriend(res[0]);
       debug('player storage reset completed!');
     }catch(err) {
       console.error(err);
