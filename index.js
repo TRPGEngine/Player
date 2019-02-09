@@ -176,19 +176,13 @@ function initFunction() {
         throw err;
       }
     },
-    getFriends: function(uuid, cb) {
-      storage.connect(function(db) {
-        let modelUser = db.models.player_user;
+    getFriendsAsync: async function(uuid, db) {
+      let user = await db.models.player_user.findOne({
+        where: {uuid}
+      })
 
-        modelUser.one({uuid}, function(err, user) {
-          if(!!err) {
-            cb(err)
-          }else {
-            user.getFriends(cb)
-          }
-          db.close();
-        });
-      });
+      let friends = await user.getFriend();
+      return friends;
     },
     joinSocketRoom: function(userUUID, roomUUID) {
       try {

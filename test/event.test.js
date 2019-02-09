@@ -80,4 +80,16 @@ describe('user action', () => {
     let friendIndex = _.findIndex(friends, {uuid: targetUUID})
     expect(friendIndex).toBeGreaterThanOrEqual(0);
   })
+
+  test('getFriends should be ok', async () => {
+    let ret = await emitEvent('player::getFriends')
+
+    expect(ret.result).toBe(true);
+    expect(ret).toHaveProperty('list');
+    ret.list.map((item) => {
+      // 检测返回的好友列表不能带入敏感信息
+      expect(item.token).toBeFalsy();
+      expect(item.app_token).toBeFalsy();
+    })
+  })
 })
