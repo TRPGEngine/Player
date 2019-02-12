@@ -189,4 +189,20 @@ describe('user action', () => {
       expect(index).toBeGreaterThanOrEqual(0);
     })
   })
+
+  test('check user online should be ok', async () => {
+    let selfRet = await emitEvent('player::checkUserOnline', {
+      uuid: userInfo.uuid
+    });
+
+    expect(selfRet.result).toBe(true);
+    expect(selfRet.isOnline).toBe(true);
+
+    let errRet = await emitEvent('player::checkUserOnline', {
+      uuid: Math.random()
+    });
+
+    expect(errRet.result).toBe(true);
+    expect(errRet.isOnline).toBe(false);
+  })
 })
