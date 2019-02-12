@@ -133,6 +133,7 @@ describe('user action', () => {
       });
 
       inviteUUID = invite.uuid;
+      expect(inviteUUID).toBeTruthy();
     })
 
     afterEach(async () => {
@@ -146,7 +147,6 @@ describe('user action', () => {
     })
 
     test('agree should be ok', async () => {
-      expect(inviteUUID).toBeTruthy();
       let ret = await emitEvent('player::agreeFriendInvite', {
         uuid: inviteUUID
       })
@@ -163,7 +163,6 @@ describe('user action', () => {
     })
     
     test('refuse should be ok', async () => {
-      expect(inviteUUID).toBeTruthy();
       let ret = await emitEvent('player::refuseFriendInvite', {
         uuid: inviteUUID
       })
@@ -177,6 +176,17 @@ describe('user action', () => {
       expect(instance).toBeTruthy();
       expect(instance.is_agree).toBe(false);
       expect(instance.is_refuse).toBe(true);
+    })
+
+    test('get invite should be ok', async () => {
+      let ret = await emitEvent('player::getFriendsInvite');
+      expect(ret.result).toBe(true);
+
+      expect(ret.res).toHaveProperty('length');
+      let index = _.findIndex(ret.res, {
+        uuid: inviteUUID
+      })
+      expect(index).toBeGreaterThanOrEqual(0);
     })
   })
 })
