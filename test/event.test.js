@@ -92,4 +92,30 @@ describe('user action', () => {
       expect(item.app_token).toBeFalsy();
     })
   })
+  
+  test('sendFriendInvite should be ok', async () => {
+    let testUser = await db.models.player_user.findOne({where: {
+      username: 'admin6'
+    }})
+    expect(testUser).toBeTruthy();
+    
+    let ret = await emitEvent('player::sendFriendInvite', {
+      to: testUser.uuid
+    });
+    expect(ret.result).toBe(true);
+    const invite = ret.invite;
+
+    let retDup = await emitEvent('player::sendFriendInvite', {
+      to: testUser.uuid
+    });
+    expect(retDup.result).toBe(false); // 应当不允许重复请求
+
+    let inviteInstance = await db.models.player_invite.findOne({
+      where: {
+        uuid: invite.uuid
+      }
+    })
+    expect(inviteInstance).toBeTruthy();
+    await inviteInstance.destroy(); // 移除生成的邀请实例
+  });
 })
