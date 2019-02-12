@@ -205,4 +205,11 @@ describe('user action', () => {
     expect(errRet.result).toBe(true);
     expect(errRet.isOnline).toBe(false);
   })
+
+  test('get settings should be ok', async () => {
+    let ret = await emitEvent('player::getSettings');
+    expect(ret.result).toBe(true);
+    expect(ret).toHaveProperty('userSettings');
+    expect(ret).toHaveProperty('systemSettings');
+  })
 })
