@@ -212,4 +212,6 @@ describe('user action', () => {
     expect(ret).toHaveProperty('userSettings');
     expect(ret).toHaveProperty('systemSettings');
   })
+
+  test.todo('save settings should be ok');
 })
