@@ -118,4 +118,65 @@ describe('user action', () => {
     expect(inviteInstance).toBeTruthy();
     await inviteInstance.destroy(); // 移除生成的邀请实例
   });
+
+  describe('friend invite action', async () => {
+    let inviteUUID = null;
+
+    beforeEach(async () => {
+      // 创建一个好友邀请
+      let testUser = await db.models.player_user.findOne({where: {
+        username: 'admin6'
+      }})
+      let invite = await db.models.player_invite.create({
+        from_uuid: testUser.uuid,
+        to_uuid: userInfo.uuid
+      });
+
+      inviteUUID = invite.uuid;
+    })
+
+    afterEach(async () => {
+      // 移除新建的邀请
+      await db.models.player_invite.destroy({
+        where: {
+          uuid: inviteUUID
+        }
+      });
+      inviteUUID = null;
+    })
+
+    test('agree should be ok', async () => {
+      expect(inviteUUID).toBeTruthy();
+      let ret = await emitEvent('player::agreeFriendInvite', {
+        uuid: inviteUUID
+      })
+      expect(ret.result).toBe(true);
+
+      let instance = await db.models.player_invite.findOne({
+        where: {
+          uuid: inviteUUID
+        }
+      })
+      expect(instance).toBeTruthy();
+      expect(instance.is_agree).toBe(true);
+      expect(instance.is_refuse).toBe(false);
+    })
+    
+    test('refuse should be ok', async () => {
+      expect(inviteUUID).toBeTruthy();
+      let ret = await emitEvent('player::refuseFriendInvite', {
+        uuid: inviteUUID
+      })
+      expect(ret.result).toBe(true);
+      
+      let instance = await db.models.player_invite.findOne({
+        where: {
+          uuid: inviteUUID
+        }
+      })
+      expect(instance).toBeTruthy();
+      expect(instance.is_agree).toBe(false);
+      expect(instance.is_refuse).toBe(true);
+    })
+  })
 })
