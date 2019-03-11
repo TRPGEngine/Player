@@ -50,115 +50,35 @@ function initStorage() {
 function initFunction() {
   let app = this;
   let storage = app.storage;
+  let db = app.storage.db;
+
   app.player = {
     list: new PlayerList(),
-    getPlayer: function getPlayer(id, cb) {
+    getPlayer: async function getPlayer(id, cb) {
       if(typeof id != 'number') {
         throw new Error(`id must be a Number, not a ${typeof id}`);
       }
 
-      storage.connect(function(db) {
-        let modelUser = db.models.player_user;
-        modelUser.get(id, function(err, user) {
-          if(!cb) { return; }
-
-          if(!!err) {
-            cb(err, null);
-          }else {
-            cb(null, user);
-          }
-          db.close();
-        });
-      });
+      try {
+        const user = await db.models.player_user.findByPk(id)
+        cb(null, user);
+      }catch(err) {
+        cb(err, null);
+      }
     },
-    find: function find(uuid, cb) {
+    find: async function find(uuid, cb) {
       if(typeof uuid !== 'string') {
         throw new Error(`uuid must be a string, not a ${typeof uuid}`);
       }
 
-      storage.connect(function(db) {
-        db.models.player_user.find({uuid}, function(err, user) {
-          if(!cb) { return; }
-
-          if(!!err) {
-            cb(err, null);
-          }else {
-            cb(null, user[0]);
-          }
-          db.close();
-        });
-      });
-    },
-    getActorList: function getActorList(playerId, cb) {
-      if(typeof playerId != 'number') {
-        throw new Error(`id must be a Number, not a ${typeof id}`);
-      }
-
-      storage.connect(function(db) {
-        let modelActor = db.models.player_actor;
-        modelActor.find({user_id: playerId}, function(err, actor) {
-          if(!cb) { return; }
-
-          if(!!err) {
-            cb(err, null);
-          }else {
-            cb(null, actor);
-          }
-          db.close();
-        });
-      });
-    },
-    getActor: function getActor(id, cb) {
-      if(typeof id != 'number') {
-        debug(`id must be a Number, not a ${typeof id}`);
-        return;
-      }
-
-      storage.connect(function(db) {
-        let modelActor = db.models.player_actor;
-        modelActor.get(id, function(err, actor) {
-          if(!cb) { return; }
-
-          if(!!err) {
-            cb(err, null);
-          }else {
-            cb(null, actor);
-          }
-          db.close();
-        });
-      });
-    },
-    makeFriend: function makeFriend(uuid1, uuid2, cb) {
-      // NOTICE: 弃用
-      if(!uuid1 || !uuid2) {
-        debug('make friend need 2 uuid: receive %o', {uuid1, uuid2});
-        return;
-      }
-
-      storage.connect(function(db) {
-        let modelUser = db.models.player_user;
-
-        modelUser.one({uuid: uuid1}, function(err, user1) {
-          modelUser.one({uuid: uuid2}, function(err, user2) {
-            let isErrorSend = false;
-            let flag = false;
-            let handleError = function(err) {
-              if(!!err && !isErrorSend) {
-                isErrorSend = true;
-                cb(err);
-              }else {
-                if(flag === true) {
-                  cb(null);
-                }
-                flag = true;
-              }
-            }
-            user1.addFriends([user2], handleError);
-            user2.addFriends([user1], handleError);
-            db.close();
-          })
+      try {
+        const user = await db.models.player_user.findOne({
+          where: {uuid}
         })
-      });
+        cb(null, user);
+      }catch (err) {
+        cb(err, null);
+      }
     },
     makeFriendAsync: async function(uuid1, uuid2, db) {
       if(!uuid1 || !uuid2) {
@@ -213,8 +133,7 @@ function initFunction() {
         username,
         password: md5(md5(password)),// 客户端一层md5, 服务端一层md5, 所以服务端直接创建用户需要2层md5加密
       }, options);
-      let db = await storage.connectAsync();
-      let player = await db.models.player_user.createAsync(data);
+      let player = await db.models.player_user.create(data);
       return player;
     },
   }
