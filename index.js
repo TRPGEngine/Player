@@ -16,7 +16,6 @@ module.exports = function PlayerComponent(app) {
   initRouters.call(app);
   initTimer.call(app);
   initReset.call(app);
-  initTestcase.call(app);
 
   return {
     name: "PlayerComponent"
@@ -335,13 +334,4 @@ function initReset() {
       throw err;
     }
   });
-}
-
-function initTestcase() {
-  const app = this;
-  const testevent = require('./test/event');
-
-  for (let key in testevent) {
-    app.registerTestcase(`player::${key}`, testevent[key]);
-  }
 }
