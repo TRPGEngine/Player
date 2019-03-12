@@ -7,7 +7,7 @@ const emitEvent = global.emitEvent;
 
 describe('account', () => {
   test('login should be ok', async () => {
-    let ret = await testEvent(event.login, {
+    let ret = await emitEvent('player::login', {
       username: 'admin1',
       password: md5('admin')
     })
@@ -92,13 +92,13 @@ describe('user action', () => {
       expect(item.app_token).toBeFalsy();
     })
   })
-  
+
   test('sendFriendInvite should be ok', async () => {
     let testUser = await db.models.player_user.findOne({where: {
       username: 'admin6'
     }})
     expect(testUser).toBeTruthy();
-    
+
     let ret = await emitEvent('player::sendFriendInvite', {
       to: testUser.uuid
     });
@@ -161,13 +161,13 @@ describe('user action', () => {
       expect(instance.is_agree).toBe(true);
       expect(instance.is_refuse).toBe(false);
     })
-    
+
     test('refuse should be ok', async () => {
       let ret = await emitEvent('player::refuseFriendInvite', {
         uuid: inviteUUID
       })
       expect(ret.result).toBe(true);
-      
+
       let instance = await db.models.player_invite.findOne({
         where: {
           uuid: inviteUUID
