@@ -1,8 +1,6 @@
 const _ = require('lodash');
-const event = require('../lib/event');
 const md5 = require('../md5');
 const db = global.db;
-const testEvent = global.testEvent;
 const emitEvent = global.emitEvent;
 
 describe('account', () => {

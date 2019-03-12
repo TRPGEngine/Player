@@ -186,13 +186,13 @@ function initTimer() {
   let app = this;
 
   app.registerStatJob('playerCount', async () => {
-    let db = await app.storage.db;
+    let db = app.storage.db;
     let res = await db.models.player_user.count();
     return res;
   })
 
   app.registerStatJob('playerLoginIPParse', async () => {
-    let db = await app.storage.db;
+    let db = app.storage.db;
     try {
       let logs = await db.models.player_login_log.findAsync({ip_address: null});
       for (let log of logs) {
